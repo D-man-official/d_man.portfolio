@@ -1,2 +1,2 @@
-# alex-smith
-iPortfolio - Bootstrap Portfolio Websites Template
+# Dhiman Sutradhar 
+D_man Portfolio Websites 
