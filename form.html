@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Pulse Inbox | Dark · Delete · Modern Messages</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f6f9fc 0%, #edf2f9 100%);
+      min-height: 100vh;
+      padding: 32px 20px;
+      transition: background 0.25s ease, color 0.2s ease;
+    }
+    /* DEFAULT DARK THEME */
+    body.dark-theme {
+      background: linear-gradient(135deg, #0b1120 0%, #0f172a 100%);
+    }
+    body.dark-theme .hero-panel {
+      background: rgba(18, 25, 45, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(51, 65, 85, 0.6);
+    }
+    body.dark-theme h1 {
+      background: linear-gradient(135deg, #e0f2fe, #b9e0ff);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    body.dark-theme .stats-badge {
+      background: #1e293b;
+      color: #cbd5e6;
+      border-color: #334155;
+    }
+    body.dark-theme #searchInput {
+      background: #111827;
+      border-color: #2d3a4f;
+      color: #e2e8f0;
+    }
+    body.dark-theme .refresh-btn, body.dark-theme .theme-toggle {
+      background: #1e293b;
+      border-color: #334155;
+      color: #e2e8f0;
+    }
+    body.dark-theme .message-card {
+      background: #111827e6;
+      border-color: #2d3a4f;
+    }
+    body.dark-theme .message-card:hover {
+      background: #1e293b;
+      border-color: #3b6cb7;
+    }
+    body.dark-theme .sender-name { color: #f1f5f9; }
+    body.dark-theme .timestamp { background: #0f172a; color: #94a3b8; }
+    body.dark-theme .email-line { background: #0f172a; color: #b9c8ff; }
+    body.dark-theme .subject-badge { background: #172554; color: #bbd7fb; border-color: #2d4a7c; }
+    body.dark-theme .message-text { color: #cbd5e6; background: transparent; }
+    body.dark-theme .empty-state { background: #111827cc; border-color: #334155; color: #cbd5e6; }
+    body.dark-theme .delete-card-btn { background: #2d1f2a; color: #f472b6; border-color: #831843; }
+    body.dark-theme .delete-card-btn:hover { background: #4c1d3b; color: #ffb3d9; }
+    .dashboard-container { max-width: 1100px; margin: 0 auto; }
+    .hero-panel {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px);
+      border-radius: 32px;
+      padding: 20px 28px;
+      margin-bottom: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+    .title-section {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand i { font-size: 32px; background: linear-gradient(145deg, #3b82f6, #2563eb); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    h1 { font-size: 1.9rem; font-weight: 700; background: linear-gradient(135deg, #1e293b, #2d3a4e); background-clip: text; -webkit-background-clip: text; color: transparent; letter-spacing: -0.3px; }
+    .stats-badge { background: white; padding: 8px 18px; border-radius: 60px; font-size: 0.85rem; font-weight: 600; color: #1e293b; border: 1px solid #e2edff; display: inline-flex; align-items: center; gap: 6px; }
+    .action-bar { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; }
+    .search-wrapper { flex: 2; min-width: 200px; position: relative; }
+    .search-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+    #searchInput { width: 100%; padding: 12px 16px 12px 44px; border-radius: 48px; border: 1px solid #e2edf2; background: rgba(255, 255, 255, 0.9); font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500; transition: all 0.2s; }
+    #searchInput:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); background: white; }
+    .refresh-btn, .theme-toggle { background: white; border: 1px solid #e2edf2; border-radius: 48px; padding: 10px 24px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
+    .messages-grid { display: flex; flex-direction: column; gap: 20px; animation: fadeSlideUp 0.4s ease-out; }
+    .message-card { background: rgba(255, 255, 255, 0.96); border-radius: 28px; border: 1px solid rgba(203, 213, 225, 0.4); box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.05); transition: all 0.25s ease; position: relative; }
+    .message-card:hover { transform: translateY(-4px); box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.12); border-color: #cbdff6; background: white; }
+    .card-inner { display: flex; gap: 18px; padding: 20px 24px; position: relative; }
+    .delete-card-btn {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: #fff0f2;
+      border: 1px solid #fecdd3;
+      border-radius: 40px;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.2s;
+      color: #e11d48;
+      z-index: 5;
+    }
+    .delete-card-btn:hover { background: #ffe4e8; transform: scale(1.05); }
+    .avatar { width: 56px; height: 56px; border-radius: 32px; background: linear-gradient(145deg, #eef2ff, #e0e9ff); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.3rem; color: #1e40af; text-transform: uppercase; }
+    .card-content { flex: 1; padding-right: 40px; }
+    .meta-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+    .sender-name { font-weight: 700; font-size: 1.1rem; color: #0f172a; }
+    .timestamp { font-size: 0.7rem; font-weight: 500; color: #6c86a3; background: #f1f5f9; padding: 4px 10px; border-radius: 40px; display: inline-flex; align-items: center; gap: 6px; }
+    .email-line { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 0.8rem; color: #475569; background: #f8fafc; padding: 4px 12px; border-radius: 40px; width: fit-content; }
+    .subject-badge { display: inline-flex; align-items: center; gap: 8px; background: #eef2ff; padding: 5px 14px; border-radius: 40px; margin: 8px 0 10px 0; font-weight: 600; font-size: 0.85rem; color: #1e3a8a; border: 1px solid #d9e6ff; }
+    .message-text { font-size: 0.92rem; line-height: 1.55; color: #1f2a44; word-break: break-word; white-space: pre-wrap; }
+    .empty-state { text-align: center; background: rgba(255,255,240,0.8); border-radius: 48px; padding: 50px 24px; margin-top: 20px; border: 1px dashed #b9d0f0; }
+    .loader-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; background: rgba(255,255,255,0.7); border-radius: 48px; gap: 18px; }
+    .loader-spinner { width: 48px; height: 48px; border: 3px solid #e2e8f0; border-top: 3px solid #3b82f6; border-radius: 50%; animation: spin 0.9s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 680px) {
+      .card-inner { flex-direction: column; padding: 18px; }
+      .avatar { width: 48px; height: 48px; font-size: 1.1rem; }
+      .card-content { padding-right: 32px; }
+      .delete-card-btn { top: 12px; right: 12px; width: 30px; height: 30px; }
+    }
+  </style>
+</head>
+<body class="dark-theme">
+<div class="dashboard-container">
+  <div class="hero-panel">
+    <div class="title-section">
+      <div class="brand"><i class="fas fa-inbox"></i><h1>Inbox</h1></div>
+      <div style="display: flex; gap: 12px;">
+        <div class="stats-badge" id="statsBadge"><i class="fas fa-envelope-open-text"></i> <span id="messageCount">0</span> messages</div>
+        <button class="theme-toggle" id="themeToggleBtn"><i class="fas fa-moon" id="themeIcon"></i> <span id="themeLabel">Dark</span></button>
+      </div>
+    </div>
+    <div class="action-bar">
+      <div class="search-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Filter by name, email, subject or message..."></div>
+      <button class="refresh-btn" id="refreshBtn"><i class="fas fa-rotate-right"></i> Refresh</button>
+    </div>
+  </div>
+  <div id="messagesContainer" class="messages-grid"><div class="loader-wrapper"><div class="loader-spinner"></div><span>loading conversations...</span></div></div>
+</div>
+
+<script>
+  const SHEETDB_URL = "https://sheetdb.io/api/v1/hhjo8gz78g22t";
+  let allMessages = [];
+  let currentFilter = "";
+
+  function escapeHtml(str) { if (!str) return ""; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) { return c; }); }
+
+  function formatTimestamp(ts) {
+    if (!ts) return "recent";
+    let d = new Date(ts);
+    return isNaN(d.getTime()) ? escapeHtml(String(ts).substring(0,18)) : d.toLocaleDateString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+  }
+  function getInitials(name) { if (!name) return "?"; let parts = name.trim().split(/\s+/); if (parts.length===1) return parts[0].charAt(0).toUpperCase(); return (parts[0].charAt(0)+parts[parts.length-1].charAt(0)).toUpperCase(); }
+  function getAvatarColor(name) { if (!name) return "#eef2ff"; let hash=0; for(let i=0;i<name.length;i++) hash=name.charCodeAt(i)+((hash<<5)-hash); return `hsl(${Math.abs(hash%360)}, 70%, 88%)`; }
+  function sortByDate(arr) { return [...arr].sort((a,b)=>new Date(b.Timestamp)-new Date(a.Timestamp)); }
+  function filterMessages(arr, term) { if(!term.trim()) return arr; let low=term.toLowerCase(); return arr.filter(m=>(m["Your Name"]||"").toLowerCase().includes(low)||(m["Your Email"]||"").toLowerCase().includes(low)||(m["Subject"]||"").toLowerCase().includes(low)||(m["Message"]||"").toLowerCase().includes(low)); }
+
+  // ✅ DELETION USING EMAIL (works reliably with your SheetDB)
+  async function deleteMessageByEmail(email, event) {
+    if(event) event.stopPropagation();
+    if(!email) { alert("Cannot delete: email missing."); return; }
+    if(!confirm("Delete this message permanently?")) return;
+    const container = document.getElementById("messagesContainer");
+    if(container) container.innerHTML = `<div class="loader-wrapper"><div class="loader-spinner"></div><span>deleting message...</span></div>`;
+    try {
+      const delUrl = `${SHEETDB_URL}/Your Email/${encodeURIComponent(email)}`;
+      const resp = await fetch(delUrl, { method: "DELETE" });
+      if(!resp.ok) throw new Error(`Delete failed (${resp.status})`);
+      await fetchMessages(true);
+    } catch(err) { console.error(err); alert("Delete error: "+err.message); await fetchMessages(true); }
+  }
+
+  function renderMessages() {
+    const container = document.getElementById("messagesContainer");
+    if(!container) return;
+    let filtered = filterMessages(allMessages, currentFilter);
+    const totalOrig = allMessages.length;
+    const statsSpan = document.getElementById("messageCount");
+    if(statsSpan) {
+      if(currentFilter.trim() && totalOrig) {
+        statsSpan.innerHTML = `${filtered.length} / ${totalOrig}`;
+        document.getElementById("statsBadge").innerHTML = `<i class="fas fa-filter"></i> ${filtered.length} of ${totalOrig}`;
+      } else {
+        statsSpan.innerHTML = totalOrig;
+        document.getElementById("statsBadge").innerHTML = `<i class="fas fa-envelope-open-text"></i> ${totalOrig} messages`;
+      }
+    }
+    if(filtered.length===0) {
+      container.innerHTML = `<div class="empty-state"><i class="fas fa-comment-slash"></i><div style="margin-top:8px;">✨ No messages found</div><p style="margin-top:8px; font-size:0.85rem;">${currentFilter ? "Try different keyword" : "Be the first to leave a thought"}</p></div>`;
+      return;
+    }
+    let html = "";
+    for(let msg of filtered) {
+      const email = msg["Your Email"] || "";
+      const name = msg["Your Name"] || "Anonymous";
+      const subject = msg["Subject"] || "(no subject)";
+      const body = msg["Message"] || "— no message content —";
+      const ts = msg["Timestamp"] || "";
+      html += `
+        <div class="message-card" data-email="${escapeHtml(email)}">
+          <div class="card-inner">
+            <div class="delete-card-btn" data-email="${escapeHtml(email)}"><i class="fas fa-trash-alt"></i></div>
+            <div class="avatar-wrapper"><div class="avatar" style="background: ${getAvatarColor(name)};">${escapeHtml(getInitials(name))}</div></div>
+            <div class="card-content">
+              <div class="meta-row"><span class="sender-name">${escapeHtml(name)}</span><span class="timestamp"><i class="far fa-clock"></i> ${formatTimestamp(ts)}</span></div>
+              <div class="email-line"><i class="far fa-envelope"></i> ${escapeHtml(email)}</div>
+              <div class="subject-badge"><i class="fas fa-tag"></i> ${escapeHtml(subject)}</div>
+              <div class="message-text">${escapeHtml(body).replace(/\n/g,'<br>')}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    container.innerHTML = html;
+    // attach delete listeners (using email)
+    document.querySelectorAll('.delete-card-btn').forEach(btn => {
+      const email = btn.getAttribute('data-email');
+      if(email && email.trim() !== "") {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          deleteMessageByEmail(email, e);
+        });
+      } else {
+        btn.style.cursor = "not-allowed";
+        btn.addEventListener('click', (e) => { e.stopPropagation(); alert("Cannot delete: email missing."); });
+      }
+    });
+  }
+
+  async function fetchMessages(showLoader=true) {
+    const container = document.getElementById("messagesContainer");
+    if(showLoader && container) container.innerHTML = `<div class="loader-wrapper"><div class="loader-spinner"></div><span>syncing latest messages...</span></div>`;
+    try {
+      const resp = await fetch(SHEETDB_URL);
+      if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      let data = await resp.json();
+      if(!Array.isArray(data)) data = [];
+      allMessages = sortByDate(data);
+      renderMessages();
+    } catch(err) {
+      console.error(err);
+      if(container) container.innerHTML = `<div class="empty-state"><i class="fas fa-cloud-arrow-down"></i><div>❌ Failed to load</div><p>${err.message}</p><button id="retryFetchBtn" style="margin-top:16px; background:#fff; border-radius:40px; padding:8px 20px;">↻ Retry</button></div>`;
+      const retry = document.getElementById("retryFetchBtn");
+      if(retry) retry.addEventListener("click",()=>fetchMessages(true));
+    }
+  }
+
+  let debounce;
+  function onSearch(e) { clearTimeout(debounce); debounce = setTimeout(()=>{ currentFilter = e.target.value; renderMessages(); }, 280); }
+  async function hardRefresh() { document.getElementById("searchInput").value = ""; currentFilter=""; await fetchMessages(true); }
+
+  function initDarkToggle() {
+    const btn = document.getElementById("themeToggleBtn");
+    const icon = document.getElementById("themeIcon");
+    const label = document.getElementById("themeLabel");
+    if(btn) btn.addEventListener("click",()=>{
+      document.body.classList.toggle("dark-theme");
+      const isDark = document.body.classList.contains("dark-theme");
+      icon.className = isDark ? "fas fa-moon" : "fas fa-sun";
+      label.innerText = isDark ? "Dark" : "Light";
+    });
+  }
+
+  function init() {
+    document.getElementById("searchInput").addEventListener("input", onSearch);
+    document.getElementById("refreshBtn").addEventListener("click", hardRefresh);
+    initDarkToggle();
+    fetchMessages(true);
+  }
+  init();
+</script>
+</body>
+</html>
